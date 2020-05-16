@@ -3,7 +3,8 @@ import React from 'react';
 class Form extends React.Component {
   state = {
     firstName: "John",
-    lastName: "Henry"
+    lastName: "Henry",
+    submittedData: []
   }
 
   handleFirstNameChange = event => {
@@ -18,12 +19,42 @@ class Form extends React.Component {
     })
   }
 
+  handleSubmit = event => {
+    event.preventDefault()
+
+    let formData = { firstName: this.state.firstName, lastName: this.state.lastName }
+
+    console.log('submitted formData', formData)
+
+    // let dataArray = this.state.submittedData.concat(formData)
+    // // Do NOT use state value directly when setting state
+    // this.setState({submittedData: dataArray})
+
+    // alternative way by passing a callback to setState method
+    this.setState(previousState => { 
+      return {
+        submittedData: previousState.submittedData.concat(formData)
+      }})
+  }
+ 
+  listOfSubmissions = () => {
+    console.log(this.state.submittedData)
+    return this.state.submittedData.map((data, index) => {
+      return <div key={index} ><span>{data.firstName}</span> <span>{data.lastName}</span></div>
+    })
+  }
+
   render() {
+    console.log(this.state.firstName)
     return (
-      <form>
-        <input type="text" name="firstName" onChange={event => this.handleFirstNameChange(event)} value={this.state.firstName} />
-        <input type="text" name="lastName" onChange={event => this.handleLastNameChange(event)} value={this.state.lastName} />
-      </form>
+      <div>
+        <form onSubmit={event => this.handleSubmit(event)}>
+          <input type="text" name="firstName" onChange={event => this.handleFirstNameChange(event)} defaultValue="Uriel" />
+          <input type="text" name="lastName" onChange={event => this.handleLastNameChange(event)} value={this.state.lastName} />
+          <input type="submit"/>
+        </form>
+        {this.listOfSubmissions()}
+      </div>
     )
   }
 }
